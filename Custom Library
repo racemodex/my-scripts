@@ -1,4 +1,3 @@
-if game.GameId == 833423526 then print("magik"); print("uwu"); end
 local library = {count = 0, queue = {}, callbacks = {}, rainbowtable = {}, toggled = true, binds = {}};
 local defaults; do
     local dragger = {}; do
