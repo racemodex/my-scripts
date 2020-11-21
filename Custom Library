@@ -93,21 +93,73 @@ local defaults; do
                     BorderSizePixel = 0;
                     ZIndex = 3;
                 });
-                library:Create('Frame', {
+                library:Create('ImageLabel', {
                     Name = 'container';
                     Position = UDim2.new(0, 0, 1, 0);
                     Size = UDim2.new(1, 0, 0, 0);
                     BorderSizePixel = 0;
-                    BackgroundColor3 = options.bgcolor;
+                    ImageColor3 = options.bgcolor;
                     ClipsDescendants = false;
+                    Image = "rbxassetid://3570695787";
+                    ScaleType = Enum.ScaleType.Slice;
+                    SliceCenter = Rect.new(100, 100, 100, 100);
+                    SliceScale = 0.120;
+                    BackgroundTransparency = 1;
                     library:Create('UIListLayout', {
                         Name = 'List';
                         SortOrder = Enum.SortOrder.LayoutOrder;
                     })
                 });
             })
-        
-        
+
+local Mouse = game.Players.LocalPlayer:GetMouse()
+
+local function CircleClick(Button, X, Y)
+	coroutine.resume(coroutine.create(function()
+		Button.ClipsDescendants = true
+		local Circle = Instance.new("ImageLabel")
+		Circle.BackgroundTransparency = 1
+		Circle.Size = UDim2.new(0,0,0,0)	
+		Circle.ZIndex = 15
+		Circle.Image = "rbxassetid://266543268"
+		Circle.ImageTransparency = .7
+		Circle.ImageColor3 = Color3.fromRGB(255, 255, 255)
+		Circle.Parent = Button
+		local NewX = X - Circle.AbsolutePosition.X
+		local NewY = Y - Circle.AbsolutePosition.Y
+		Circle.Position = UDim2.new(0, NewX, 0, NewY)
+		local Size = 0
+		if Button.AbsoluteSize.X > Button.AbsoluteSize.Y then
+			Size = Button.AbsoluteSize.X*1.5
+		elseif Button.AbsoluteSize.X < Button.AbsoluteSize.Y then
+			Size = Button.AbsoluteSize.Y*1.5
+		elseif Button.AbsoluteSize.X == Button.AbsoluteSize.Y then																										Size = Button.AbsoluteSize.X*1.5
+		end
+		local Time = 0.35
+		Circle:TweenSizeAndPosition(UDim2.new(0, Size, 0, Size), UDim2.new(0.5, -Size/2, 0.5, -Size/2), "Out", "Quad", Time, false, nil)
+		for i=1,30 do
+			Circle.ImageTransparency = Circle.ImageTransparency + 0.01
+			wait(Time/10)
+		end
+		Circle:Destroy()	
+	end))
+end
+
+
+delay(3,function()
+for i,v in pairs(game.CoreGui:GetChildren()) do
+    if string.find(v.Name,"racehub") then
+        for i2,v2 in pairs(v:GetDescendants()) do
+	if v2:IsA("TextButton") and v2.Text:len() > 2 then
+		local but = v2
+		but.MouseButton1Click:Connect(function()
+			CircleClick(but, Mouse.X, Mouse.Y)
+		end)
+	end        
+	end
+    end
+end
+end)
 local color1 = options.underlinecolor
 local color2 = Color3.fromRGB(0, 21, 255)   
 local changeSpeed = 50          
@@ -1058,7 +1110,7 @@ topcolor       = Color3.fromRGB(14, 0, 62);
         btncolor       = Color3.fromRGB(9, 0, 47);
         dropcolor      = Color3.fromRGB(9, 0, 47);
         sectncolor     = Color3.fromRGB(9, 0, 47);
-        bordercolor    = Color3.fromRGB(136, 136, 136);
+        bordercolor    = Color3.fromRGB(0, 21, 255);
 
         font           = Enum.Font.GothamBlack;
         titlefont      = Enum.Font.Code;
