@@ -1,10 +1,9 @@
-local library = {count = 0, queue = {}, callbacks = {}, rainbowtable = {}, toggled = true, binds = {}};
+local library = {count = 0, queue = {}, callbacks = {}, toggled = true, binds = {}};
 local defaults; do
     local dragger = {}; do
         local mouse        = game:GetService("Players").LocalPlayer:GetMouse();
         local inputService = game:GetService('UserInputService');
         local heartbeat    = game:GetService("RunService").Heartbeat;
-        -- // credits to Ririchi / Inori for this cute drag function :)
         function dragger.new(frame)
             local s, event = pcall(function()
                 return frame.MouseEnter
@@ -19,7 +18,7 @@ local defaults; do
                             local objectPosition = Vector2.new(mouse.X - frame.AbsolutePosition.X, mouse.Y - frame.AbsolutePosition.Y);
                             while heartbeat:wait() and inputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
                                 pcall(function()
-                                    frame:TweenPosition(UDim2.new(0, mouse.X - objectPosition.X + (frame.Size.X.Offset * frame.AnchorPoint.X), 0, mouse.Y - objectPosition.Y + (frame.Size.Y.Offset * frame.AnchorPoint.Y)), 'Out', 'Linear', 0.1, true);
+                                    frame:TweenPosition(UDim2.new(0, mouse.X - objectPosition.X + (frame.Size.X.Offset * frame.AnchorPoint.X), 0, mouse.Y - objectPosition.Y + (frame.Size.Y.Offset * frame.AnchorPoint.Y)), 'Out', 'Linear', 0.08, true);
                                 end)
                             end
                         end
@@ -67,7 +66,7 @@ local defaults; do
                     BackgroundTransparency = 1;
                     Font = Enum.Font.Code;
                     TextSize = options.titlesize;
-                    Font = options.titlefont;
+                    Font = Enum.Font.LuckiestGuy;
                     TextColor3 = options.titletextcolor;
                     TextStrokeTransparency = library.options.titlestroke;
                     TextStrokeColor3 = library.options.titlestrokecolor;
@@ -90,7 +89,7 @@ local defaults; do
                     Name = 'Underline';
                     Size = UDim2.new(1, 0, 0, 2);
                     Position = UDim2.new(0, 0, 1, -2);
-                    BackgroundColor3 = (options.underlinecolor ~= "rainbow" and options.underlinecolor or Color3.new());
+                    BackgroundColor3 = (options.underlinecolor or Color3.new());
                     BorderSizePixel = 0;
                     ZIndex = 3;
                 });
@@ -107,10 +106,43 @@ local defaults; do
                     })
                 });
             })
-            
-            if options.underlinecolor == "rainbow" then
-                table.insert(library.rainbowtable, newWindow:FindFirstChild('Underline'))
+        
+        
+local color1 = options.underlinecolor
+local color2 = Color3.fromRGB(0, 21, 255)   
+local changeSpeed = 50          
+local underlineframe
+for i,v in pairs(game.CoreGui:GetChildren()) do
+    if string.find(v.Name,"racehub") then
+        for i2,v2 in pairs(v:GetDescendants()) do
+            if v2.Name == "Underline" then
+                underlineframe = v2 
             end
+        end
+    end
+end
+
+spawn(function()
+	local i = -1
+	while wait() do
+	    pcall(function()
+		for i=-1,1,1/changeSpeed do
+			local f = math.abs(i)
+			underlineframe.BackgroundColor3 = Color3.fromRGB(
+				255 * (color1.r + (color2.r - color1.r) * f), 
+				255 * (color1.g + (color2.g - color1.g) * f),
+				255 * (color1.b + (color2.b - color1.b) * f)
+			)
+			underlineframe.BackgroundColor3 = Color3.fromRGB(
+				255 * (color1.r + (color2.r - color1.r) * f), 
+				255 * (color1.g + (color2.g - color1.g) * f),
+				255 * (color1.b + (color2.b - color1.b) * f)
+			)
+			wait(0.05)    
+			end
+		end)
+	end
+end) 
 
             local window = setmetatable({
                 count = 0;
@@ -125,8 +157,10 @@ local defaults; do
                 w = window.object;
                 p = window.object.Position;
             })
-
+local newWindowmoving = false
             newWindow:FindFirstChild("window_toggle").MouseButton1Click:connect(function()
+                if newWindowmoving == false then
+                    newWindowmoving = true
                 window.toggled = not window.toggled;
                 newWindow:FindFirstChild("window_toggle").Text = (window.toggled and "+" or "-")
                 if (not window.toggled) then
@@ -143,11 +177,14 @@ local defaults; do
                 local targetSize = window.toggled and UDim2.new(1, 0, 0, y+5) or UDim2.new(1, 0, 0, 0);
                 local targetDirection = window.toggled and "In" or "Out"
 
-                window.container:TweenSize(targetSize, targetDirection, "Quad", 0.15, true)
-                wait(.15)
+                window.container:TweenSize(targetSize, targetDirection, "Sine", 0.3, true)
+                wait(.3)
+                newWindowmoving = false
                 if window.toggled then
                     window.container.ClipsDescendants = false;
                 end
+                end
+                
             end)
 
             return window;
@@ -174,7 +211,7 @@ local defaults; do
         end
         
         function types:Label(text)
-            local v = game:GetService'TextService':GetTextSize(text, 18, Enum.Font.SourceSans, Vector2.new(math.huge, math.huge))
+            local v = game:GetService'TextService':GetTextSize(text, 18, Enum.Font.GothamBlack, Vector2.new(math.huge, math.huge))
             local object = library:Create('Frame', {
                 Size = UDim2.new(1, 0, 0, v.Y + 5);
                 BackgroundTransparency  = 1;
@@ -185,7 +222,7 @@ local defaults; do
 
                     Text = text;
                     TextSize = 18;
-                    Font = Enum.Font.SourceSans;
+                    Font = Enum.Font.GothamBlack;
                     TextColor3 = Color3.fromRGB(255, 255, 255);
                     BackgroundTransparency = 1;
                     TextXAlignment = Enum.TextXAlignment.Left;
@@ -223,7 +260,7 @@ local defaults; do
                     library:Create('TextButton', {
                         Text = (location[flag] and utf8.char(10003) or "");
                         Font = library.options.font;
-                        TextSize = library.options.fontsize;
+                        TextSize = library.options.fontsize+5;
                         Name = 'Checkmark';
                         Size = UDim2.new(0, 20, 0, 20);
                         Position = UDim2.new(1, -25, 0, 4);
@@ -581,7 +618,7 @@ local defaults; do
                             Position = UDim2.new(0, 0, 0, 1);
                             AutoButtonColor = false;
                             Text = "";
-                            BackgroundColor3 = Color3.fromRGB(20, 20, 20);
+                            BackgroundColor3 = Color3.fromRGB(89, 89, 89);
                             BorderSizePixel = 0;
                             ZIndex = 2;
                             TextStrokeTransparency = library.options.textstroke;
@@ -591,7 +628,7 @@ local defaults; do
                             Name = 'Line';
                             BackgroundTransparency = 0;
                             Position = UDim2.new(0, 0, 0.5, 0);
-                            Size     = UDim2.new(1, 0, 0, 1);
+                            Size     = UDim2.new(1, 0, 0, 3);
                             BackgroundColor3 = Color3.fromRGB(255, 255, 255);
                             BorderSizePixel = 0;
                         });
@@ -1016,17 +1053,17 @@ topcolor       = Color3.fromRGB(14, 0, 62);
         titlecolor     = Color3.fromRGB(255, 255, 255);
         
         underlinecolor = Color3.fromRGB(1, 8, 131);
-        bgcolor        = Color3.fromRGB(14, 0, 62);
-        boxcolor       = Color3.fromRGB(14, 0, 62);
-        btncolor       = Color3.fromRGB(10, 0, 48);
-        dropcolor      = Color3.fromRGB(10, 0, 48);
-        sectncolor     = Color3.fromRGB(10, 0, 48);
-        bordercolor    = Color3.fromRGB(94, 94, 94);
+        bgcolor        = Color3.fromRGB(11, 0, 54);
+        boxcolor       = Color3.fromRGB(9, 0, 47);
+        btncolor       = Color3.fromRGB(9, 0, 47);
+        dropcolor      = Color3.fromRGB(9, 0, 47);
+        sectncolor     = Color3.fromRGB(9, 0, 47);
+        bordercolor    = Color3.fromRGB(136, 136, 136);
 
-        font           = Enum.Font.SourceSans;
+        font           = Enum.Font.GothamBlack;
         titlefont      = Enum.Font.Code;
 
-        fontsize       = 17;
+        fontsize       = 13;
         titlesize      = 18;
 
         textstroke     = 1;
@@ -1043,16 +1080,7 @@ topcolor       = Color3.fromRGB(14, 0, 62);
 
     library.options = setmetatable({}, {__index = default})
 
-    spawn(function()
-        while true do
-            for i=0, 1, 1 / 300 do              
-                for _, obj in next, library.rainbowtable do
-                    obj.BackgroundColor3 = Color3.fromHSV(i, 1, 1);
-                end
-                wait()
-            end;
-        end
-    end)
+
 
     local function isreallypressed(bind, inp)
         local key = bind
