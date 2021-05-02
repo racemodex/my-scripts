@@ -1,9 +1,0 @@
-game.StarterGui:SetCore('SendNotification', {
-        Title    = 'Script Patched',
-        Text     = ('Buy Racmdx Premium for unpatched version'),
-        Duration = 9999,
-    })
-    
-if setclipboard then
-setclipboard("https://discord.gg/BYBnBCt")
-end
