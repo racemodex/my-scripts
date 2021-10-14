@@ -1,6 +1,0 @@
-game.StarterGui:SetCore('SendNotification', {
-        Title    = 'April Fools Day',
-        Text     = ('this script was obviously an april fool, only you was able to see the money.'),
-        Duration = 9999,
-    })
-    
